@@ -13,14 +13,18 @@ import os
 #os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
 #os.environ["CUDA_VISIBLE_DEVICES"]="0, 1"
 import numpy as np
-# import tensorflow as tf
 from keras import optimizers
-import vis.visualization
+import vis
 
-from MIT_Tumor_Identifcation_Project.Machine_learning_runs.Phase_2_stuff import nicholas_models_phase_2_new_testing as md
+import nicholas_models_phase_2_new_testing as md
 
 import tensorflow as tf
-import keras.backend.tensorflow_backend as tfback
+import keras.backend as tfback
+
+from tensorflow import InteractiveSession
+config = tf.compat.v1.ConfigProto()
+config.gpu_options.allow_growth = True
+session = InteractiveSession(config=config)
 
 print("tf.__version__ is", tf.__version__)
 print("tf.keras.__version__ is:", tf.keras.__version__)
@@ -40,11 +44,7 @@ def _get_available_gpus():
 tfback._get_available_gpus = _get_available_gpus
 
 
-import tensorflow as tf
-from tensorflow.compat.v1 import InteractiveSession
-config = tf.compat.v1.ConfigProto()
-config.gpu_options.allow_growth = True
-session = InteractiveSession(config=config)
+
 
 shape_aux= (3,20,50,50)
 model = md.new_20X_model_4(input_shape=shape_aux)
@@ -66,7 +66,7 @@ model.load_weights(os.path.join(r"D:\MIT_Tumor_Identifcation_Project_Stuff\Phase
 # =============================================
 # Activation Maximization code
 # =============================================
-from vis.utils import utils
+from vis import utils
 import matplotlib.pyplot as plt
 
 example_matrix = np.load(r"D:\MIT_Tumor_Identifcation_Project_Stuff\May_Cutting_Image_Types\step9 Rotated_ROI_1600_cells\device 1 chip 1 and 2 ROI5_02.oib\device 1 chip 1 and 2 ROI5_02.oib - Series 1-1 0000_cell1_0Fb1Tc_accuracy55.4942index7\Final_5D_array_2.npy")

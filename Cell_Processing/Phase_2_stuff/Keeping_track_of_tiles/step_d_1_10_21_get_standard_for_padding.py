@@ -14,7 +14,7 @@ Will now also print out the average of the x, y and z values.
 import os
 import numpy as np
 from pathlib import Path
-from utils.checkDirectory import checkDirectory
+from Common_Utils.checkDirectory import checkDirectory
 from utils.image_os_walker import image_os_walker
 
 

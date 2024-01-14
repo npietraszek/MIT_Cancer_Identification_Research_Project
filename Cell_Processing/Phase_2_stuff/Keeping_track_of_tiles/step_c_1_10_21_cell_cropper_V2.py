@@ -16,7 +16,7 @@ import numpy as np
 import PIL
 import matplotlib.pyplot as plt
 from pathlib import Path
-from utils.checkDirectory import checkDirectory
+from Common_Utils.checkDirectory import checkDirectory
 
 '''
 Function to remove empty slices from the 3D cell images, then save the remaining usable slices as 2D matrices inside seperate folders, 

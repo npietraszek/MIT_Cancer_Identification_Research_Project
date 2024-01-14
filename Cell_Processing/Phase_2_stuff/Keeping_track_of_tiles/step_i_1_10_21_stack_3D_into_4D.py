@@ -37,7 +37,7 @@ Saves DAPI to [0], Reflective to [1], and Brightfield to [2].
 import os
 import numpy as np
 from pathlib import Path
-from utils.checkDirectory import checkDirectory
+from Common_Utils.checkDirectory import checkDirectory
 from utils.image_os_walker import image_os_walker
 
 def stack_DAPI_into_5D(array_to_move, array_to_stack_onto):

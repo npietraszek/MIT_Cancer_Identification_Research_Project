@@ -53,7 +53,7 @@ to try this again.
 import numpy as np
 from pathlib import Path
 import os
-from utils.checkDirectory import checkDirectory
+from Common_Utils.checkDirectory import checkDirectory
 from utils.image_os_walker import image_os_walker
 def splitall(path):
     allparts = []

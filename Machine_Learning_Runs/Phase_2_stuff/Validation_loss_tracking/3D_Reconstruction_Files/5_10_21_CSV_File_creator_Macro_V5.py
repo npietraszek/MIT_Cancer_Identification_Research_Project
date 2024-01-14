@@ -5,19 +5,16 @@ import numpy as np
 # import tensorflow as tf
 import math
 from keras import optimizers
-from keras.callbacks import LearningRateScheduler, ModelCheckpoint, CSVLogger
 from keras.utils import Sequence
 from random import shuffle
-import random
-import shutil
 from pathlib import Path
-from MIT_Tumor_Identifcation_Project.Machine_learning_runs.Phase_2_stuff import nicholas_models_phase_2_new_testing as md
+import nicholas_models_phase_2_new_testing as md
 import csv
-
+from Common_Utils.checkDirectory import checkDirectory
 
 # Code imported from internet
 import tensorflow as tf
-from tensorflow.compat.v1 import InteractiveSession
+from tensorflow import InteractiveSession
 config = tf.compat.v1.ConfigProto()
 config.gpu_options.allow_growth = True
 session = InteractiveSession(config=config)
@@ -25,9 +22,25 @@ session = InteractiveSession(config=config)
 #K.set_image_dim_ordering('tf')
 
 import tensorflow as tf
-import keras.backend.tensorflow_backend as tfback
+import keras.backend as tfback
+
+print("tf.__version__ is", tf.__version__)
+print("tf.keras.__version__ is:", tf.keras.__version__)
+
+def _get_available_gpus():
+    """Get a list of available gpu devices (formatted as strings).
+
+    # Returns
+        A list of available GPU devices.
+    """
+    #global _LOCAL_DEVICES
+    if tfback._LOCAL_DEVICES is None:
+        devices = tf.config.list_logical_devices()
+        tfback._LOCAL_DEVICES = [x.name for x in devices]
+    return [x for x in tfback._LOCAL_DEVICES if 'device:gpu' in x.lower()]
 
 
+tfback._get_available_gpus = _get_available_gpus
 
 # Generator in testing. STILL NEEDS VERIFICATION
 class nicholas_generator(Sequence) :
@@ -124,48 +137,6 @@ def csv_getter(filename,prediction):
         # writing the data rows
         csvwriter.writerows(rows)
 
-
-#    for root, dirs, files in os.walk(
-#            r"D:\MIT_Tumor_Identifcation_Project_Stuff\NEW 20X cell images\new 20x batch Testing with Tuan's V3 Macro"):
-#        for the_dir in dirs:
-def checkDirectory(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        print("Created a missing folder at " + directory)
-
-r'''
-def find_original_cell_ROI_old(cell_folder_name):
-
-    #path_parts = splitall(cell_folder_name)
-
-    #the_folder = path_parts[-2]
-    #print(the_folder)
-    final_folder = r""
-
-    for path in Path(r"D:\MIT_Tumor_Identifcation_Project_Stuff\NEW 20X cell images\new 20x batch Testing with Tuan's V3 Macro").rglob("*.tif"):
-        #print(path)
-        path_parts = splitall(path)
-        the_name = os.path.splitext(path_parts[-1])[0]
-        if the_name == cell_folder_name:
-            final_folder = os.path.split(path)[0]
-            #print("the cell folder is " + str(cell_folder_name))
-            #print("the final folder is " + str(final_folder))
-            the_folders = os.path.join(path_parts[-7],path_parts[-6],path_parts[-5],path_parts[-4],path_parts[-3],path_parts[-2])
-            the_path = os.path.join(r"D:\MIT_Tumor_Identifcation_Project_Stuff\NEW 20X cell images\new 20x batch Testing with Tuan's V3 Macro", the_folders)
-            new_path = os.path.join(directory_to_move_to, the_folders)
-            #checkDirectory(new_path)
-            try:
-                shutil.copytree(final_folder, new_path)
-            except FileNotFoundError as e:
-                print("FileNotFoundError: %s : %s" % (new_path, e.strerror))
-            except FileExistsError as e:
-                print("FileNotFoundError: %s : %s" % (new_path, e.strerror))
-            return new_path
-
-    print("Not found")
-'''
-
-
 def find_original_cell_ROI(cell_folder_name, device_folder_name, macroPath):
 
     #path_parts = splitall(cell_folder_name)
@@ -198,26 +169,6 @@ def find_original_cell_ROI(cell_folder_name, device_folder_name, macroPath):
     raise ValueError("Final folder not found.")
 
 
-import tensorflow as tf
-import keras.backend.tensorflow_backend as tfback
-
-print("tf.__version__ is", tf.__version__)
-print("tf.keras.__version__ is:", tf.keras.__version__)
-
-def _get_available_gpus():
-    """Get a list of available gpu devices (formatted as strings).
-
-    # Returns
-        A list of available GPU devices.
-    """
-    #global _LOCAL_DEVICES
-    if tfback._LOCAL_DEVICES is None:
-        devices = tf.config.list_logical_devices()
-        tfback._LOCAL_DEVICES = [x.name for x in devices]
-    return [x for x in tfback._LOCAL_DEVICES if 'device:gpu' in x.lower()]
-
-
-tfback._get_available_gpus = _get_available_gpus
 
 base_folder= r'D:\MIT_Tumor_Identifcation_Project_Stuff'
 #input_path = base_folder
