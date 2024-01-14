@@ -1,5 +1,5 @@
 '''
-3/19/21
+5/16/21
 Full machine learning run program. Runs a "superloop" of multiple machine learning epoch runs.
 Each superloop iteration has a different randomization of training dataset and validation dataset and testing dataset,
 '''

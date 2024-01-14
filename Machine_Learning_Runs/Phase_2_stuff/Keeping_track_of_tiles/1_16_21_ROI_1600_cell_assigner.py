@@ -1,14 +1,8 @@
 '''
 7/2/20
 
-VERY IMPORTANT TOOL. TESTED EXTENSIVELY
-Multiplies the number of matrices in a folder by 4 by rotating all the images on the xy axis
-in the folder by 90,180, and then 270 degrees, then saves them as separate images in a separate folder.
 
-This should increase the number of images and the accuracy we have to work with.
-
-The xy axis rotation has been tested extensively and has no problem.
-
+Assigns 1600 cells to the saved_1600_cell_directory and the rest to the new_directory.
 '''
 
 

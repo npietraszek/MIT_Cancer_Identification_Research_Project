@@ -21,6 +21,7 @@ Program works as intended!
 
 import os
 import numpy as np
+import shutil
 from Common_Utils import checkDirectory
 
 def remove_image_type_from_4D(array_to_remove_from,image_type):
@@ -42,7 +43,7 @@ def remove_image_type_from_4D(array_to_remove_from,image_type):
     return new_array
 
 
-def cut_image_type(starting_directory, target_directory, image_type):
+def cut_single_image_type(starting_directory, target_directory, image_type, test = False):
     checkDirectory(starting_directory)
     checkDirectory(target_directory)
 
@@ -74,6 +75,41 @@ def cut_image_type(starting_directory, target_directory, image_type):
                 new_array_3 = remove_image_type_from_4D(final_array_3, image_type)
                 new_array_4 = remove_image_type_from_4D(final_array_4, image_type)
 
+                
+                if image_type == "brightfield":
+                    assert np.array_equal(final_array_1[0], new_array_1[0])
+                    assert np.array_equal(final_array_2[0], new_array_2[0])
+                    assert np.array_equal(final_array_3[0], new_array_3[0])
+                    assert np.array_equal(final_array_4[0], new_array_4[0])
+
+                    assert np.array_equal(final_array_1[1], new_array_1[1])
+                    assert np.array_equal(final_array_2[1], new_array_2[1])
+                    assert np.array_equal(final_array_3[1], new_array_3[1])
+                    assert np.array_equal(final_array_4[1], new_array_4[1])
+
+                elif image_type == "reflective":
+                    assert np.array_equal(final_array_1[0], new_array_1[0])
+                    assert np.array_equal(final_array_2[0], new_array_2[0])
+                    assert np.array_equal(final_array_3[0], new_array_3[0])
+                    assert np.array_equal(final_array_4[0], new_array_4[0])
+
+                    assert np.array_equal(final_array_1[2], new_array_1[1])
+                    assert np.array_equal(final_array_2[2], new_array_2[1])
+                    assert np.array_equal(final_array_3[2], new_array_3[1])
+                    assert np.array_equal(final_array_4[2], new_array_4[1])
+                elif image_type == "DAPI":
+                    assert np.array_equal(final_array_1[1], new_array_1[0])
+                    assert np.array_equal(final_array_2[1], new_array_2[0])
+                    assert np.array_equal(final_array_3[1], new_array_3[0])
+                    assert np.array_equal(final_array_4[1], new_array_4[0])
+
+                    assert np.array_equal(final_array_1[2], new_array_1[1])
+                    assert np.array_equal(final_array_2[2], new_array_2[1])
+                    assert np.array_equal(final_array_3[2], new_array_3[1])
+                    assert np.array_equal(final_array_4[2], new_array_4[1])
+                else:
+                    raise ValueError("Invalid image type")
+                
                 final_path = os.path.join(target_directory, directory, dir)
                 checkDirectory(final_path)
                 np.save(os.path.join(final_path, r"Final_5D_array_1.npy"), new_array_1)
@@ -81,9 +117,24 @@ def cut_image_type(starting_directory, target_directory, image_type):
                 np.save(os.path.join(final_path, r"Final_5D_array_3.npy"), new_array_3)
                 np.save(os.path.join(final_path, r"Final_5D_array_4.npy"), new_array_4)
                 np.save(os.path.join(final_path, r"Label_matrix.npy"), label_array)
-
+                
 
 if __name__ == "__main__":
     starting_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\May_Cutting_Image_Types\step9 Rotated_ROI_without_1600"
     target_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\May_Cutting_Image_Types\No_brightfield_without_1600"
-    cut_image_type(starting_directory, target_directory, "brightfield")
+    cut_single_image_type(starting_directory, target_directory, "brightfield")
+
+
+
+
+'''
+         for file in files:
+            x = str(file)
+            if x.endswith(".txt"):
+                file1 = open(os.path.join(starting_directory, directory, file))
+                if test == True:
+                    print(file1.read())
+                    print(os.path.join(starting_directory, directory, file))
+                    print(os.path.join(target_directory, directory, file))
+                shutil.copy(os.path.join(starting_directory, directory, file),os.path.join(target_directory, directory, file))
+'''
