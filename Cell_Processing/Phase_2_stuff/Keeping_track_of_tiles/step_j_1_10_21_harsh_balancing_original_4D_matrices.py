@@ -11,71 +11,9 @@ Program to remove excess cancer cells by removing the ones with the lowest confi
 
 
 import os
-import numpy as np
 import shutil
 import re
-
-def checkDirectory(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        print("Created a missing folder at " + directory)
-
-def remove_brightfield_and_reflective_from_4D(array_to_remove_from):
-    new_array = np.zeros((1,20,50,50))
-    for b in range(len(array_to_remove_from[0])):
-        for c in range(len(array_to_remove_from[0][0])):
-            for d in range(len(array_to_remove_from[0][0][0])):
-                new_array[0][b][c][d] = array_to_remove_from[0][b][c][d]
-    return new_array
-
-def stack_DAPI_into_5D(array_to_move, array_to_stack_onto):
-    for z in range(len(array_to_move)):
-        for y in range(len(array_to_move[0])):
-            for x in range(len(array_to_move[0][0])):
-                array_to_stack_onto[0][z][y][x] = array_to_move[z][y][x]
-    return array_to_stack_onto
-
-def stack_Reflective_into_5D(array_to_move, array_to_stack_onto):
-    for z in range(len(array_to_move)):
-        for y in range(len(array_to_move[0])):
-            for x in range(len(array_to_move[0][0])):
-                array_to_stack_onto[1][z][y][x] = array_to_move[z][y][x]
-    return array_to_stack_onto
-
-def stack_Transmission_brightfield_into_5D(array_to_move, array_to_stack_onto):
-    for z in range(len(array_to_move)):
-        for y in range(len(array_to_move[0])):
-            for x in range(len(array_to_move[0][0])):
-                array_to_stack_onto[2][z][y][x] = array_to_move[z][y][x]
-    return array_to_stack_onto
-
-# Pads the matrices in the list based on the maximum length and width of the matrices in the list.
-def pad_matrices_in_list(the_list):
-    max_y = 0
-    max_x = 0
-    for z in range(len(the_list)):
-        if len(the_list[z]) > max_y:
-            max_y = len(the_list[z])
-        for y in range(len(the_list[z])):
-            if len(the_list[z][y]) > max_x:
-                max_x = len(the_list[z][y])
-    padding_matrix = np.zeros((len(the_list),max_y,max_x))
-    for z in range(len(the_list)):
-        for y in range(len(the_list[z])):
-            for x in range(len(the_list[z][y])):
-                padding_matrix[z][y][x] = the_list[z][y][x]
-    return padding_matrix
-
-# Pads the matrices in the list based on a standard size.
-# (SHOULD NOT BE USED IF THE STANDARD SIZE IS SMALLER THAN ANY OF THE MATRICES IN IT)
-def pad_matrices_in_list_to_standard(the_list, z_length,y_length,x_length):
-    padding_matrix = np.zeros((z_length,y_length,x_length))
-    for z in range(len(the_list)):
-        for y in range(len(the_list[z])):
-            for x in range(len(the_list[z][y])):
-                padding_matrix[z][y][x] = the_list[z][y][x]
-    return padding_matrix
-
+from Common_Utils.checkDirectory import checkDirectory
 
 def harsh_balancer(starting_directory, new_directory, moving_directory):
     checkDirectory(starting_directory)
