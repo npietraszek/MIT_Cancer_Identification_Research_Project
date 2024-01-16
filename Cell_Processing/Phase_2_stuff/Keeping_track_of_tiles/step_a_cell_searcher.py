@@ -58,29 +58,30 @@ def cell_searcher(starting_directory, target_directory, accuracy_standard = 0, c
 
         # Check whether or not the accuracy value is above 90%.
         accuracy_index = x.find("accuracy")
-        letters_after_accuracy = x[accuracy_index+8:]
-        list_of_numbers = ([float(s) for s in re.findall(r'-?\d+\.?\d*', letters_after_accuracy)])
-        accuracy_value = list_of_numbers[0]
-        if accuracy_value >= accuracy_standard:
-            accuracy_test = True
-        # Checking the probability values for the cell classifcation.
-        for ii in range(len(x)):
-            if x[ii] == "F":
-                if x[ii + 1] == "b":
-                    letters_before_fb = x[:ii]
-                    letters_after_fb = x[ii:]
-                    list_of_numbers_before_fb = [float(s) for s in re.findall(r'-?\d+\.?\d*', letters_before_fb)]
-                    list_of_numbers_after_fb = [float(s) for s in re.findall(r'-?\d+\.?\d*', letters_after_fb)]
-                    fibroblast_number = list_of_numbers_before_fb[-1]
-                    cancer_cell_number = list_of_numbers_after_fb[0]
-                    if fibroblast_number > cancer_cell_number:
-                        if fibroblast_number >= classification_standard:
-                            classification_test = True
-                            is_cell_fibroblast = True
-                    else:
-                        if cancer_cell_number >= classification_standard:
-                            classification_test = True
-                            is_cell_cancer_cell = True
+        if accuracy_index != -1:
+            letters_after_accuracy = x[accuracy_index+8:]
+            list_of_numbers = ([float(s) for s in re.findall(r'-?\d+\.?\d*', letters_after_accuracy)])
+            accuracy_value = list_of_numbers[0]
+            if accuracy_value >= accuracy_standard:
+                accuracy_test = True
+            # Checking the probability values for the cell classifcation.
+            for ii in range(len(x)):
+                if x[ii] == "F":
+                    if x[ii + 1] == "b":
+                        letters_before_fb = x[:ii]
+                        letters_after_fb = x[ii:]
+                        list_of_numbers_before_fb = [float(s) for s in re.findall(r'-?\d+\.?\d*', letters_before_fb)]
+                        list_of_numbers_after_fb = [float(s) for s in re.findall(r'-?\d+\.?\d*', letters_after_fb)]
+                        fibroblast_number = list_of_numbers_before_fb[-1]
+                        cancer_cell_number = list_of_numbers_after_fb[0]
+                        if fibroblast_number > cancer_cell_number:
+                            if fibroblast_number >= classification_standard:
+                                classification_test = True
+                                is_cell_fibroblast = True
+                        else:
+                            if cancer_cell_number >= classification_standard:
+                                classification_test = True
+                                is_cell_cancer_cell = True
         if classification_test == True:
             if accuracy_test == True:
                 # The cells pass both the classification and accuracy tests.

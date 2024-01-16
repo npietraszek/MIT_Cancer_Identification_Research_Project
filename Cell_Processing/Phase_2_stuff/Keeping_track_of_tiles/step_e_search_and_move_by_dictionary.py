@@ -1,6 +1,6 @@
 '''
 8_28_20
-Program to search and move directories based on the previous "get_all_strange_values"
+Program to search and move cells inside the combined_list outputted from "get_all_strange_values."
 
 '''
 import os

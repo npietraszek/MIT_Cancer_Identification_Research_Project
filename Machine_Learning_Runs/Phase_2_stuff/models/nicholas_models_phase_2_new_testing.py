@@ -1,8 +1,8 @@
 from keras.models import Model
 from keras.layers import Input, MaxPooling3D, GlobalAveragePooling3D, AveragePooling3D, GlobalMaxPooling3D
-from keras.layers.core import Activation, Reshape, Dense, Flatten
-from keras.layers.convolutional import Convolution3D, Conv3DTranspose, UpSampling3D
-from keras.layers.normalization import BatchNormalization
+from keras.layers import Activation, Reshape, Dense, Flatten
+from keras.layers import Convolution3D, Conv3DTranspose, UpSampling3D
+from keras.layers import BatchNormalization
 from keras.layers import Dropout
 from keras.applications import Xception
 from keras.applications import VGG19

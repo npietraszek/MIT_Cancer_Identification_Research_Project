@@ -127,15 +127,7 @@ def find_original_cell_ROI(cell_folder_name, ground_truths_directory):
 
 
 
-'''
-# Need some kind of padding function??? Need to figure out how to get these matrices into a standard shape...
-def stack_matrices_in_list(the_list):
-    stacked_matrix = np.zeros((len(the_list),len(the_list[0]),len(the_list[0][0])))
-    for z in range(len(the_list)):
-        for y in range(len(the_list[z])):
-            for x in range(len(the_list[z][y])):
-                stacked_matrix = the_list[z][y][x]
-'''
+
 def matrix_stacker_V3(ground_truths_directory, starting_directory, new_directory, test=False):
     checkDirectory(starting_directory)
     checkDirectory(new_directory)
@@ -159,7 +151,8 @@ def matrix_stacker_V3(ground_truths_directory, starting_directory, new_directory
                         # create fibroblast label matrix
                         # fibroblast_counter = fibroblast_counter + 1
                         label_matrix = np.asarray([1, 0])
-                        print("Fibroblast label matrix: " + str(label_matrix))
+                        if test == True:
+                            print("Fibroblast label matrix: " + str(label_matrix))
                         path_to_matrix = os.path.join(new_directory, dir, "label_matrix")
                         checkDirectory(path_to_matrix)
                         np.save(os.path.join(path_to_matrix, "Label_matrix"), label_matrix)
@@ -167,77 +160,16 @@ def matrix_stacker_V3(ground_truths_directory, starting_directory, new_directory
                         # create cancer cell label matrix
                         # cancer_cell_counter = cancer_cell_counter + 1
                         label_matrix = np.asarray([0, 1])
-                        print("Cancer label matrix: " + str(label_matrix))
+                        if test == True:
+                            print("Cancer label matrix: " + str(label_matrix))
                         path_to_matrix = os.path.join(new_directory, dir, "Label_matrix")
                         checkDirectory(path_to_matrix)
                         np.save(os.path.join(path_to_matrix, "Label_matrix"), label_matrix)
 
-            '''
-            for ii in range(len(y)):
-                if y[ii] == "F":
-                    if y[ii + 1] == "b":
-                        letters_before_fb = y[:ii]
-                        letters_after_fb = y[ii:]
-                        print("letters before fb = " + str(letters_before_fb))
-                        print("letters after fb = " + str(letters_after_fb))
-                        list_of_numbers_before_fb = [float(s) for s in re.findall(r'-?\d+\.?\d*', letters_before_fb)]
-                        list_of_numbers_after_fb = [float(s) for s in re.findall(r'-?\d+\.?\d*', letters_after_fb)]
-                        # print("numbers before fb = " + str(list_of_numbers_before_fb))
-                        # print("numbers after fb = " + str(list_of_numbers_after_fb))
-                        fibroblast_number = list_of_numbers_before_fb[-1]
-                        cancer_cell_number = list_of_numbers_after_fb[0]
-                        print("fibroblast number = " + str(fibroblast_number))
-                        print("cancer cell number = " + str(list_of_numbers_after_fb[0]))
-                        if fibroblast_number > cancer_cell_number:
-                            # create fibroblast label matrix
-                            # fibroblast_counter = fibroblast_counter + 1
-                            label_matrix = np.asarray([1,0])
-                            print("Fibroblast label matrix: " + str(label_matrix))
-                            path_to_matrix = os.path.join(new_directory, dir, "label_matrix")
-                            checkDirectory(path_to_matrix)
-                            np.save(os.path.join(path_to_matrix,"Label_matrix"),label_matrix)
-                        else:
-                            # create cancer cell label matrix
-                            # cancer_cell_counter = cancer_cell_counter + 1
-                            label_matrix = np.asarray([0, 1])
-                            print("Cancer label matrix: " + str(label_matrix))
-                            path_to_matrix = os.path.join(new_directory, dir,"Label_matrix")
-                            checkDirectory(path_to_matrix)
-                            np.save(os.path.join(path_to_matrix,"Label_matrix"),label_matrix)
-            '''
             # Begin searching each directory for the 2D PNGs
-            print("Now searching directory " + str(dir))
+            if test == True:
+                print("Now searching directory " + str(dir))
             DAPI_3D_array, Reflection_3D_array, Transmission_brightfield_3D_array = image_os_walker(starting_directory, dir, DAPI_3D_array, Reflection_3D_array, Transmission_brightfield_3D_array, test=test)
-            '''
-            for path in Path(os.path.join(starting_directory,dir)).rglob("*.NPY"):
-                x = str(path.name)
-                if x[0] == "C":
-                    if x[1] == "1":
-                        print("This path has a C1 image: " + path.name)
-                        arr1 = np.load(str(path))
-                        # print(arr1)
-                        stack_and_crop(arr1,DAPI_3D_array)
-                    if x[1] == "2":
-                        print("This path has a C2 image: " + path.name)
-                        # arr2 = np.load(str(path))
-                        # print(arr2)
-                        # stack_and_crop(arr2, Fibroblast_3D_array)
-                    if x[1] == "3":
-                        print("This path has a C3 image: " + path.name)
-                        # arr3 = np.load(str(path))
-                        # print(arr3)
-                        # stack_and_crop(arr3, Cancer_3D_array)
-                    if x[1] == "4":
-                        print("This path has a C4 image: " + path.name)
-                        arr4 = np.load(str(path))
-                        # print(arr4)
-                        stack_and_crop(arr4, Reflection_3D_array)
-                    if x[1] == "5":
-                        print("This path has a C5 image: " + path.name)
-                        arr5 = np.load(str(path))
-                        # print(arr5)
-                        stack_and_crop(arr5, Transmission_brightfield_3D_array)
-            '''
 
             # Padding the matrices
             DAPI_3D_array = pad_matrices_in_list_to_standard(DAPI_3D_array,20,50,50)

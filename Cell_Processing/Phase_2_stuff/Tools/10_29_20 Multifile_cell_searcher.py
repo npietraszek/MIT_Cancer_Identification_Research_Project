@@ -43,7 +43,7 @@ for the_loop_counter in range(0,10):
     fibroblast_counter = 0
     cancer_cell_counter = 0
     total_cell_count = 0
-    letters_of_accuracy = ['a','c','c','u','r','a','c','y']
+    # letters_of_accuracy = ['a','c','c','u','r','a','c','y']
     for the_file in Path(starting_directory).rglob('*.tif'):
         x = str(the_file)
 
@@ -53,6 +53,7 @@ for the_loop_counter in range(0,10):
         is_cell_cancer_cell = False
 
         # Check whether or not the accuracy value is above 90%.
+        '''
         for ii in range(len(x)):
             if x[ii] == letters_of_accuracy[0]:
                 if x[ii + 1] == letters_of_accuracy[1]:
@@ -62,17 +63,21 @@ for the_loop_counter in range(0,10):
                                 if x[ii + 5] == letters_of_accuracy[5]:
                                     if x[ii + 6] == letters_of_accuracy[6]:
                                         if x[ii + 7] == letters_of_accuracy[7]:
-                                            total_cell_count = total_cell_count + 1
-                                            # letters_before_accuracy = x[:ii+7]
-                                            letters_after_accuracy = x[ii + 8:]
-                                            print(letters_after_accuracy)
-                                            list_of_numbers = (
-                                            [float(s) for s in re.findall(r'-?\d+\.?\d*', letters_after_accuracy)])
-                                            print(list_of_numbers)
-                                            accuracy_value = list_of_numbers[0]
-                                            float(10*the_loop_counter)
-                                            if accuracy_value > float(10*the_loop_counter) and accuracy_value <= float(10*(the_loop_counter+1)):
-                                                accuracy_test = True
+                                        '''
+        accuracy_index = x.find("accuracy")
+        if accuracy_index != -1:
+            letters_after_accuracy = x[accuracy_index+8:]
+            total_cell_count = total_cell_count + 1
+            # letters_before_accuracy = x[:ii+7]
+            letters_after_accuracy = x[ii + 8:]
+            print(letters_after_accuracy)
+            list_of_numbers = (
+            [float(s) for s in re.findall(r'-?\d+\.?\d*', letters_after_accuracy)])
+            print(list_of_numbers)
+            accuracy_value = list_of_numbers[0]
+            float(10*the_loop_counter)
+            if accuracy_value > float(10*the_loop_counter) and accuracy_value <= float(10*(the_loop_counter+1)):
+                accuracy_test = True
         # Checking the probability values for the cell classifcation.
         for ii in range(len(x)):
             if x[ii] == "F":
