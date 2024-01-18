@@ -15,7 +15,7 @@ It also gathers the directory where the maximum dimensions are found, as well as
 import os
 import numpy as np
 from Common_Utils.checkDirectory import checkDirectory
-from utils.image_os_walker import image_os_walker
+from Common_Utils.image_os_walker import image_os_walker
 
 '''
 Collects information about the total dimensions of the 3D cell images for a particular directory.

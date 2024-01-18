@@ -1,47 +1,7 @@
 '''
 8/28/20
-This program works alongside version 2 of the cell_cropper after an image size standard has been enforced.
-
-Differences from version 2:
-
-Now uses the image standard generated from get_standard_for_padding.py.
-Now has proper directory variables
-
-THINGS TO DO:
-Make sure the array pads properly. May want to begin the process of finding a standard size.
-Make sure the array crops properly.
-Turn everything into one program? Skip saving into 2D matrices, and start with just the matrices and work up?
-
-NEED TO DO SYSTEMIC TESTING WHEN ALL PROGRAMMING IS FINISHED:
-1) Check to make sure the PNG to matrix transformation is credible (cell_cropper_V2) (DONE)
-2) Make sure the empty slice cropping works (cell_cropper_V2) (DONE)
-3) Make sure label matrices are created correctly (DONE)
-4) Make sure cropping works (DONE?)
-5) Make sure padding works properly
-6) Make sure the stacking works properly (DONE)
-7) Make sure matrix is saved in the correct places and the correct folders (DONE)
-
-STEPS COMPLETED:
-0) Use glob (rglob?) to find every cell image. (Need to find a way to work off path names, perhaps?) (DONE)
-1) Turn PNGs (or other images) into matrices (DONE)
-2) Crop any completely empty slices (DONE)
-3) Create a label matrix for the proper cell type each 3D matrix has.
-4) Look through and remember which rows and columns have information in them (are not null) across all 2D slices
-in 3D matrix, and crop all other rows and columns out of the 2D slices of the 3D matrix.
-5) Pad the matrices afterward so that they have a standard size. Might need to come back to this later when we have
-a standard size for all the images.
-6) Take the 2D matrices and turn them into a 3D matrix.
-7) Save the cropped 3D matrix with the same name as the cell image name
-8) Repeat this for every cell in the folder
-
-Program runs:
-
-This program was run on 6/28/20 on
-starting_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\Cropping results\attempt 1 without any of the strange cells"
-new_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\Cropping results\3D_matrices_(no_strange_cells)"
-
-This was the first attempt to stack and pad the matrices. Will probably come back later once we have properly curated images
-to try this again.
+The most complex part of the preprocessing pipeline. This program takes the non-strange 2D images from the cell_cropper, pads them according'
+to the image standard (20-50-50), creates label matrices associated with them, and saves them as 3D matrices.
 
 
 '''
@@ -54,23 +14,12 @@ import numpy as np
 from pathlib import Path
 import os
 from Common_Utils.checkDirectory import checkDirectory
-from utils.image_os_walker import image_os_walker
-def splitall(path):
-    allparts = []
-    while 1:
-        parts = os.path.split(path)
-        if parts[0] == path:  # sentinel for absolute paths
-            allparts.insert(0, parts[0])
-            break
-        elif parts[1] == path: # sentinel for relative paths
-            allparts.insert(0, parts[1])
-            break
-        else:
-            path = parts[0]
-            allparts.insert(0, parts[1])
-    return allparts
+from Common_Utils.image_os_walker import image_os_walker
+from Common_Utils.splitall import splitall
 
-# Pads the matrices in the list based on the maximum length and width of the matrices in the list.
+'''
+Pads the matrices in the list based on the maximum length and width of the matrices in the list.
+'''
 def pad_matrices_in_list(the_list):
     max_y = 0
     max_x = 0
@@ -98,7 +47,20 @@ def pad_matrices_in_list_to_standard(the_list, z_length,y_length,x_length):
     return padding_matrix
 
 
-# Modified to account for chip name at beginning of each folder
+'''
+Finds the original cell ROI folder for a given cell folder in order to find the ground truth label matrix associated with it.
+Modified to account for chip name at beginning of each folder.
+Parameters
+----------
+cell_folder_name : string
+    The name of the cell folder to find the original cell ROI folder for.
+ground_truths_directory : string
+    The directory to search for the original cell ROI folder in.
+Returns
+-------
+final_folder : string
+    The directory of the original cell ROI folder.
+'''
 def find_original_cell_ROI(cell_folder_name, ground_truths_directory):
     final_folder = r""
     if "device 1 chip 1 and 2" in cell_folder_name:
@@ -127,7 +89,24 @@ def find_original_cell_ROI(cell_folder_name, ground_truths_directory):
 
 
 
-
+'''
+Main function of the program. 
+Takes the 2D images from the cell_cropper, pads them according to the image standard (20-50-50), 
+creates label matrices associated with them, and saves them as 3D matrices.
+Parameters
+----------
+ground_truths_directory : string
+    The directory to find the ground truth label matrices in.
+starting_directory : string
+    The directory to find the 2D images in.
+new_directory : string  
+    The directory to save the 3D matrices in.
+test : boolean
+    Whether or not to print out extra information for testing purposes.
+Returns
+-------
+None.
+'''
 def matrix_stacker_V3(ground_truths_directory, starting_directory, new_directory, test=False):
     checkDirectory(starting_directory)
     checkDirectory(new_directory)

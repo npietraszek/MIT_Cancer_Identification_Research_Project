@@ -10,14 +10,14 @@ Then, after this is done, takes the cropped array and appends it to the array_to
 
 Parameters
 ----------
-array_to_crop : 2D numpy array
+array_to_crop : 2D list
     The array to crop.
-array_to_stack_on : 3D numpy array
+array_to_stack_on : 3D list
     The array to stack the cropped array on top of once the cropping is finished.
 
 Returns
 -------
-array_to_stack_on : 3D numpy array
+array_to_stack_on : 3D list
     The array with the cropped array stacked on top of it.
 '''
 def stack_and_crop(array_to_crop,array_to_stack_on):

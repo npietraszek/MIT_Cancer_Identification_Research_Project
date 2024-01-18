@@ -14,31 +14,22 @@ import os
 import shutil
 import re
 from Common_Utils.checkDirectory import checkDirectory
-
-def harsh_balancer(starting_directory, new_directory, moving_directory):
+from Common_Utils.find_accuracy_number import find_accuracy_number
+def harsh_balancer(starting_directory, new_directory, moving_directory, num_of_cancer_cells_to_remove, test=False):
     checkDirectory(starting_directory)
     checkDirectory(new_directory)
     checkDirectory(moving_directory)
     # We need to remove cancer cells
     cancer_cell_counter = 0
     fibroblast_counter = 0
-    letters_of_accuracy = ['a','c','c','u','r','a','c','y']
     list_of_cancer_cells = []
     list_of_accuracy_values = []
     list_of_confidences = []
-
-    list_of_worst_cancer_cells = []
 
 
     for root, dirs, files in os.walk(starting_directory):
         for dir in dirs:
             x = str(dir)
-
-            accuracy_test = False
-            classification_test = False
-            is_cell_fibroblast = False
-            is_cell_cancer_cell = False
-
 
             # Checking the probability values for the cell classifcation.
             for ii in range(len(x)):
@@ -58,41 +49,20 @@ def harsh_balancer(starting_directory, new_directory, moving_directory):
                         print("cancer cell number = " + str(list_of_numbers_after_fb[0]))
                         if fibroblast_number > cancer_cell_number:
                             if fibroblast_number >= 0.5:
-                                classification_test = True
-                                is_cell_fibroblast = True
-                                print("You pass! " + str(x) + " passes the test!")
                                 the_path = os.path.join(starting_directory, dir)
                                 destination = os.path.join(new_directory, dir)
                                 shutil.copytree(the_path, destination)
                                 fibroblast_counter = fibroblast_counter + 1
                         else:
                             if cancer_cell_number >= 0.5:
-                                classification_test = True
-                                is_cell_cancer_cell = True
                                 # Check whether or not the accuracy value is above 90%.
-                                for ii in range(len(x)):
-                                    if x[ii] == letters_of_accuracy[0]:
-                                        if x[ii + 1] == letters_of_accuracy[1]:
-                                            if x[ii + 2] == letters_of_accuracy[2]:
-                                                if x[ii + 3] == letters_of_accuracy[3]:
-                                                    if x[ii + 4] == letters_of_accuracy[4]:
-                                                        if x[ii + 5] == letters_of_accuracy[5]:
-                                                            if x[ii + 6] == letters_of_accuracy[6]:
-                                                                if x[ii + 7] == letters_of_accuracy[7]:
-                                                                    # letters_before_accuracy = x[:ii+7]
-                                                                    letters_after_accuracy = x[ii + 8:]
-                                                                    print(letters_after_accuracy)
-                                                                    list_of_numbers = (
-                                                                        [float(s) for s in re.findall(r'-?\d+\.?\d*',
-                                                                                                    letters_after_accuracy)])
-                                                                    print(list_of_numbers)
-                                                                    accuracy_value = list_of_numbers[0]
-                                                                    list_of_cancer_cells.append(dir)
-                                                                    list_of_confidences.append(cancer_cell_number)
-                                                                    list_of_accuracy_values.append(accuracy_value)
-                                                                    cancer_cell_counter = cancer_cell_counter + 1
+                                accuracy_value = find_accuracy_number(x)
+                                list_of_cancer_cells.append(dir)
+                                list_of_confidences.append(cancer_cell_number)
+                                list_of_accuracy_values.append(accuracy_value)
+                                cancer_cell_counter = cancer_cell_counter + 1
 
-    for x in range(1879):
+    for x in range(num_of_cancer_cells_to_remove):
         current_minimum = min(list_of_confidences)
         for i in range(len(list_of_cancer_cells)):
             if list_of_confidences[i] == current_minimum:
@@ -108,21 +78,22 @@ def harsh_balancer(starting_directory, new_directory, moving_directory):
                 list_of_confidences.pop(i)
                 cancer_cell_counter = cancer_cell_counter - 1
                 break
-    print("Number of cancer cells = " + str(cancer_cell_counter))
-    print("Number of fibroblast cells = " + str(fibroblast_counter))
+    if test == True:
+        print("Number of cancer cells before curation = " + str(cancer_cell_counter))
+        print("Number of fibroblast cells before curation = " + str(fibroblast_counter))
     # After the weakest cancer cells have been removed, continue
     for x in list_of_cancer_cells:
         print("You pass! " + str(x) + " passes the test!")
         the_path = os.path.join(starting_directory, x)
         destination = os.path.join(new_directory, x)
         shutil.copytree(the_path, destination)
-
-    print("Curation has finished.")
-    print("Number of cancer cells = " + str(cancer_cell_counter))
-    print("Number of fibroblast cells = " + str(fibroblast_counter))
+    if test == True:
+        print("Curation has finished.")
+        print("Number of cancer cells after curation = " + str(cancer_cell_counter))
+        print("Number of fibroblast cells after curation = " + str(fibroblast_counter))
 
 if __name__ == "__main__":
     starting_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\Phase_2_stuff\New_20X_images\Macro V5 images\20X tile_watch\step5.5 curated 4D matrices (20-50-50)"
     new_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\Phase_2_stuff\New_20X_images\Macro V5 images\20X tile_watch\step6 Balanced 4D matrices"
     moving_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\Phase_2_stuff\New_20X_images\Macro V5 images\20X tile_watch\unused_cancer_cells"
-    harsh_balancer(starting_directory, new_directory, moving_directory)
+    harsh_balancer(starting_directory, new_directory, moving_directory, 1879)

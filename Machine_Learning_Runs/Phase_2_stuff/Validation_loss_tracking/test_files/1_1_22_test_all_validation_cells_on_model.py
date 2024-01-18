@@ -6,17 +6,18 @@ import numpy as np
 # import tensorflow as tf
 import math
 from keras import optimizers
-from keras.callbacks import LearningRateScheduler, ModelCheckpoint, CSVLogger
 from keras.utils import Sequence
 from random import shuffle
-import random
-import shutil
 from pathlib import Path
-from MIT_Tumor_Identifcation_Project.Machine_learning_runs.Phase_2_stuff import \
-    nicholas_models_phase_2_new_testing as md
+import models.nicholas_models_phase_2_new_testing as md
 import csv
 import time
-
+import re
+from tensorflow import InteractiveSession
+import tensorflow as tf
+import keras.backend as tfback
+from Common_Utils.splitall import splitall
+from Common_Utils.nicholas_generator import nicholas_generator
 '''
 8/14/21
 Gets the lowest validation loss from the number of epochs and path specified
@@ -24,8 +25,6 @@ and returns it along with the epoch number that brought that lowest validation l
 
 '''
 
-import matplotlib.pyplot as plt
-import re
 
 
 # Import validation data
@@ -66,8 +65,6 @@ def test_all_validation_cells_on_model_directory(directory):
     print("From loop, minimum validation loss epoch number is " + str(min_validation_epoch_number + 1))
 
     # Code imported from internet
-    import tensorflow as tf
-    from tensorflow.compat.v1 import InteractiveSession
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
 
@@ -76,58 +73,8 @@ def test_all_validation_cells_on_model_directory(directory):
     # from keras import backend as K
     # K.set_image_dim_ordering('tf')
 
-    import tensorflow as tf
-    import keras.backend.tensorflow_backend as tfback
-
-    # Generator in testing. STILL NEEDS VERIFICATION
-    class nicholas_generator(Sequence):
-        def __init__(self, matrix_filenames, label_filenames, batch_size):
-            self.matrix_filenames = matrix_filenames
-            self.label_filenames = label_filenames
-            self.batch_size = batch_size
-
-        def __len__(self):
-            return (np.ceil(len(self.matrix_filenames) / float(self.batch_size))).astype(np.int)
-
-        def __getitem__(self, idx):
-            matrix_batch = self.matrix_filenames[idx * self.batch_size: (idx + 1) * self.batch_size]
-            label_batch = self.label_filenames[idx * self.batch_size: (idx + 1) * self.batch_size]
-            # return np.array([np.resize(np.squeeze(np.load(file_name)[0]),(1,64,64,64)) for file_name in batch]), np.array([np.resize(np.squeeze(np.load(file_name)[1]),(1,64,64,64)) for file_name in batch])
-            # return np.array([np.reshape(np.load(file_name)[0,0],(64,64,64,2)) for file_name in batch]), np.array([np.reshape(np.load(file_name)[0,1],(3,64,64,64)) for file_name in batch])
-            return np.array([np.load(file_name) for file_name in matrix_batch]), np.array(
-                [np.load(file_name) for file_name in label_batch])
-
-    def splitall(path):
-        allparts = []
-        while 1:
-            parts = os.path.split(path)
-            if parts[0] == path:  # sentinel for absolute paths
-                allparts.insert(0, parts[0])
-                break
-            elif parts[1] == path:  # sentinel for relative paths
-                allparts.insert(0, parts[1])
-                break
-            else:
-                path = parts[0]
-                allparts.insert(0, parts[1])
-        return allparts
-
     print("tf.__version__ is", tf.__version__)
     print("tf.keras.__version__ is:", tf.keras.__version__)
-
-    def step_decay(epoch):
-        initial_lrate = 0.001
-        drop = 0.5
-        epochs_drop = 5.0
-        lrate = initial_lrate * math.pow(drop, math.floor((1 + epoch) / epochs_drop))
-        return lrate
-
-    class LossHistory():
-        def on_train_begin(self, logs={}):
-            self.losses = []
-
-        def on_batch_end(self, batch, logs={}):
-            self.losses.append(logs.get('loss'))
 
     def _get_available_gpus():
         """Get a list of available gpu devices (formatted as strings).
@@ -140,77 +87,6 @@ def test_all_validation_cells_on_model_directory(directory):
             devices = tf.config.list_logical_devices()
             tfback._LOCAL_DEVICES = [x.name for x in devices]
         return [x for x in tfback._LOCAL_DEVICES if 'device:gpu' in x.lower()]
-
-    def csv_getter(filename, prediction):
-        # field names
-        fields = ['Fibroblast', 'Cancer']
-
-        # data rows of csv file.
-        current_prediction_index = 0
-        for x in range(2):
-            if prediction[0][x] == max(prediction[0]):
-                current_prediction_index = x
-
-        if current_prediction_index == 1:
-            # Cancer
-            rows = [[0, 1]]
-        else:
-            # Fibroblast
-            rows = [[1, 0]]
-        # name of csv file
-        full_filename = os.path.join(filename, "the_csv_file.csv")
-        # writing to csv file
-        with open(full_filename, 'w') as csvfile:
-            # creating a csv writer object
-            csvwriter = csv.writer(csvfile)
-
-            # writing the fields
-            csvwriter.writerow(fields)
-
-            # writing the data rows
-            csvwriter.writerows(rows)
-
-    #    for root, dirs, files in os.walk(
-    #            r"D:\MIT_Tumor_Identifcation_Project_Stuff\NEW 20X cell images\new 20x batch Testing with Tuan's V3 Macro"):
-    #        for the_dir in dirs:
-    def checkDirectory(directory):
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-            print("Created a missing folder at " + directory)
-
-    def find_original_cell_ROI(cell_folder_name, device_folder_name, macroPath):
-
-        # path_parts = splitall(cell_folder_name)
-
-        # the_folder = path_parts[-2]
-        # print(the_folder)
-        final_folder = r""
-        path_to_use = ""
-        if device_folder_name == "device 1 chip 1 and 2":
-            path_to_use = os.path.join(macroPath, "device 1", "chip 1 and 2")
-        elif device_folder_name == "device 1 chip 3":
-            path_to_use = os.path.join(macroPath, "device 1", "chip 3")
-        elif device_folder_name == "device 2":
-            path_to_use = os.path.join(macroPath, "device 2")
-        elif device_folder_name == "device 3 chip 1 2 3":
-            path_to_use = os.path.join(macroPath, "device 3 chip 1 2 3", "40kDa__0001")
-        elif device_folder_name == "device 3 chip 3":
-            path_to_use = os.path.join(macroPath, "device 3 chip 3", "ROIs")
-        else:
-            raise ValueError("Path not found.")
-        #print(path_to_use)
-        for path in Path(path_to_use).rglob("*.tif"):
-            # print(path)
-            path_parts = splitall(path)
-            the_name = os.path.splitext(path_parts[-1])[0]
-            if the_name == cell_folder_name:
-                final_folder = os.path.split(path)[0]
-                return final_folder
-
-        raise ValueError("Final folder not found.")
-
-    import tensorflow as tf
-    import keras.backend.tensorflow_backend as tfback
 
     print("tf.__version__ is", tf.__version__)
     print("tf.keras.__version__ is:", tf.keras.__version__)
@@ -367,15 +243,6 @@ def test_all_validation_cells_on_model_directory(directory):
 
     # Function to loop over all of the epoch weight savings and record the maximum accuracy and testing loss,
     # as well as the epochs responsible for the high scores.
-
-    maximum_accuracy = 0
-    testing_loss_with_maximum_accuracy = 0
-    epoch_with_maximum_accuracy = 0
-
-    minimum_testing_loss = 100000
-    accuracy_with_minimum_testing_loss = 0
-    epoch_with_minimum_testing_loss = 0
-
     num_fibroblasts = 0
     num_cancer_cells = 0
     for i in range(len(final_compiled_testing_labels)):

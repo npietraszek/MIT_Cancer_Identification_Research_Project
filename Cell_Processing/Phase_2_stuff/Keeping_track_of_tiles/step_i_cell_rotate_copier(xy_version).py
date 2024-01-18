@@ -19,12 +19,23 @@ import numpy as np
 from pathlib import Path
 from Common_Utils.checkDirectory import checkDirectory
 
+'''
+Rotates the 5D arrays in the starting directory 3 times, and then copies the 4 copies of the matrices to the target directory.
+Also copies over the corresponding label matrices.
+Parameters:
+----------
+starting_directory : str
+    The directory to start searching in recursively.
+target_directory : str
+    The directory to copy the rotated matrices to.
+Returns:
+-------
+None
+'''
 def cell_rotate_copier(starting_directory, target_directory):
     checkDirectory(starting_directory)
     checkDirectory(target_directory)
 
-    fibroblast_counter = 0
-    cancer_cell_counter = 0
     for root, dirs, files in os.walk(starting_directory):
         for dir in dirs:
             x = str(dir)

@@ -1,4 +1,3 @@
-#"D:\MIT_Tumor_Identifcation_Project_Stuff\Phase_2_stuff\New_20X_images\Macro V5 images\20X (no standard) Images Macro V5\step7 Rotated 4D matrices (20-50-50)"
 '''
 8/10/20
 THIS CODE MUST BE USED TO CURATE ANY IMAGES
@@ -16,21 +15,9 @@ Glob path: just put in path instead of path.name
 
 
 import os
-import random
-import numpy as np
-import PIL
-from PIL import Image
-import matplotlib.pyplot as plt
-from scipy.ndimage import zoom
 import shutil
-import glob
-from pathlib import Path
 import re
-
-def checkDirectory(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        print("Created a missing folder at " + directory)
+from Common_Utils.checkDirectory import checkDirectory
 
 
 

@@ -17,7 +17,7 @@ TODO: Deduplication won't be necessary if you just use a combined list from the 
 
 
 import os
-from utils.image_os_walker import image_os_walker
+from Common_Utils.image_os_walker import image_os_walker
 
 
 '''
