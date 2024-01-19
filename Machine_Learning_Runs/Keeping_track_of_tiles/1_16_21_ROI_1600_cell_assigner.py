@@ -17,6 +17,17 @@ from Common_Utils.checkDirectory import checkDirectory
 '''
 Assigns 1600 cells to the saved_1600_cell_directory and the rest to the new_directory.
 Used to get a random testing dataset for the machine learning to work off of.
+Parameters
+----------
+starting_directory : str
+    The directory where all the cells are hosted initially.
+saved_1600_cell_directory : str
+    The directory to copy the 1600 cells to.
+new_directory : str
+    The directory to copy the rest of the cells to.
+Returns
+-------
+None
 '''
 def ROI_1600_cell_assigner(starting_directory, saved_1600_cell_directory, new_directory):
     checkDirectory(starting_directory)
