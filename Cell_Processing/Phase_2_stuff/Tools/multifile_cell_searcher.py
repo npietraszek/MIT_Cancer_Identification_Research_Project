@@ -11,6 +11,19 @@ from pathlib import Path
 import re
 from Common_Utils.checkDirectory import checkDirectory
 
+
+'''
+Code designed to find the cells that pass each decile of accuracy percentages for diagnostic purposes.
+Parameters
+----------
+starting_directory : str
+    The directory to start searching in recursively.
+new_directory : str
+    The directory to copy the cells that pass the accuracy test to.
+Returns
+-------
+None
+'''
 def multifile_cell_searcher(starting_directory, new_directory):
     for the_loop_counter in range(0,10):
         target_directory = new_directory + r"\{0}".format(the_loop_counter) + r"0% decile check"

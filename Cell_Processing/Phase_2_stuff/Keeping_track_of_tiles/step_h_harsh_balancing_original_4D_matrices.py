@@ -15,6 +15,26 @@ import shutil
 import re
 from Common_Utils.checkDirectory import checkDirectory
 from Common_Utils.find_accuracy_number import find_accuracy_number
+
+'''
+Balances the number of cancer cells and fibroblast cells in a directory by removing the cancer cells with the lowest confidences in classification.
+Parameters
+----------
+starting_directory : str
+    The directory to start searching in recursively.
+new_directory : str
+    The directory to copy the cells that pass the accuracy test to.
+moving_directory : str
+    The directory to move the cells that fail the accuracy test to.
+num_of_cancer_cells_to_remove : int
+    The number of cancer cells to remove from the directory.
+test : bool
+    Whether or not to print out the names of the accuracy files.
+Returns
+-------
+None
+
+'''
 def harsh_balancer(starting_directory, new_directory, moving_directory, num_of_cancer_cells_to_remove, test=False):
     checkDirectory(starting_directory)
     checkDirectory(new_directory)

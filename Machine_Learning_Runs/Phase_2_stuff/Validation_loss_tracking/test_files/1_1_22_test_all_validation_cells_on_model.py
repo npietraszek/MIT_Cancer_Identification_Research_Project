@@ -17,7 +17,7 @@ from tensorflow import InteractiveSession
 import tensorflow as tf
 import keras.backend as tfback
 from Common_Utils.splitall import splitall
-from Common_Utils.nicholas_generator import nicholas_generator
+from Common_Utils.machine_learning.generators import nicholas_generator
 '''
 8/14/21
 Gets the lowest validation loss from the number of epochs and path specified

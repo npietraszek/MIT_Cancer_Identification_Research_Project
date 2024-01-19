@@ -41,28 +41,6 @@ config.gpu_options.allow_growth = True
 session = InteractiveSession(config=config)
 #from keras import backend as K
 #K.set_image_dim_ordering('tf')
-def step_decay_modify(epoch):
-    initial_lrate = 0.01
-    drop = 0.5
-    epochs_drop = 5.0
-    if epoch < 10:
-        return initial_lrate
-    else:
-        lrate = initial_lrate * math.pow(drop, math.floor((1+epoch)/epochs_drop))
-        return lrate
-def step_decay(epoch):
-    initial_lrate = 0.001
-    drop = 0.5
-    epochs_drop = 5.0
-    lrate = initial_lrate * math.pow(drop, math.floor((1+epoch)/epochs_drop))
-    return lrate
-
-class LossHistory():
-     def on_train_begin(self, logs={}):
-        self.losses = []
-
-     def on_batch_end(self, batch, logs={}):
-        self.losses.append(logs.get('loss'))
 
 
 # Kwabena's generator
@@ -81,27 +59,6 @@ class kwabena_generator(Sequence) :
         #return np.array([np.reshape(np.load(file_name)[0,0],(64,64,64,2)) for file_name in batch]), np.array([np.reshape(np.load(file_name)[0,1],(3,64,64,64)) for file_name in batch])
         return np.array([np.reshape(np.load(file_name)['input'],(64,64,64,3)) for file_name in batch]), np.array([np.reshape(np.load(file_name)['output']/np.sum(np.load(file_name)['output'],1),(3,64,64,64)) for file_name in batch])
 
-# Old generator
-'''
-class nicholas_generator(Sequence):
-    def __init__(self,dataArray,labelArray, batch_size):
-        self.dataArray = dataArray
-        self.dataArraySampleNum = len(dataArray[0])
-        self.labelArray = labelArray
-        self.batch_size = batch_size
-    def __len__(self):
-        return (np.ceil(len(self.dataArray) / float(self.batch_size))).astype(np.int)
-    def __getitem__(self,idx):
-
-
-        reshaped_dataArray = self.dataArray
-        reshaped_labelArray = self.labelArray
-        x = reshaped_dataArray[idx * self.batch_size:(idx + 1) * self.batch_size]
-        y = reshaped_labelArray[idx * self.batch_size:(idx + 1) * self.batch_size]
-        x = np.array(x)
-        y = np.array(y)
-        return x, y
-'''
 # Generator in testing. STILL NEEDS VERIFICATION
 class nicholas_generator(Sequence) :
     def __init__(self, matrix_filenames, label_filenames, batch_size) :
