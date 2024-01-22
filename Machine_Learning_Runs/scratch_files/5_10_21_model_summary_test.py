@@ -10,8 +10,12 @@ from keras.utils import Sequence
 from random import shuffle
 import random
 import re
+import sys
+# sys.path is a list of absolute path strings
+sys.path.append("")
 
-from MIT_Tumor_Identifcation_Project.Machine_learning_runs.Phase_2_stuff import nicholas_models_phase_2_new_testing as md
+
+from Common_Utils.machine_learning.models.nicholas_models_phase_2_new_testing import new_20X_model_12
 
 # Code imported from internet
 import tensorflow as tf
@@ -23,5 +27,5 @@ session = InteractiveSession(config=config)
 #K.set_image_dim_ordering('tf')
 
 shape_aux = (3, 20, 50, 50)
-model = md.new_20X_model_12(input_shape=shape_aux)
+model = new_20X_model_12(input_shape=shape_aux)
 model.summary()

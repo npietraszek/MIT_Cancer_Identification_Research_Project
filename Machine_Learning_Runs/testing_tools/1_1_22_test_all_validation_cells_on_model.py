@@ -13,7 +13,7 @@ import models.nicholas_models_phase_2_new_testing as md
 import csv
 import time
 import re
-from tensorflow import InteractiveSession
+from tensorflow.compat.v1 import InteractiveSession
 import tensorflow as tf
 import keras.backend as tfback
 from Common_Utils.splitall import splitall

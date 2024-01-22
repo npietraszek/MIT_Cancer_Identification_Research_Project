@@ -34,7 +34,7 @@ import nicholas_models_phase_2_new_testing as md
 
 # Code imported from internet
 import tensorflow as tf
-from tensorflow import InteractiveSession
+from tensorflow.compat.v1 import InteractiveSession
 config = tf.compat.v1.ConfigProto()
 config.gpu_options.allow_growth = True
 session = InteractiveSession(config=config)

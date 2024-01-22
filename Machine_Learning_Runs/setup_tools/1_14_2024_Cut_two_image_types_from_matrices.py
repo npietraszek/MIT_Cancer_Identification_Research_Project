@@ -23,6 +23,23 @@ import os
 import numpy as np
 from Common_Utils import checkDirectory
 
+
+'''
+Removes two image types from a 4D matrix.
+Removing this data is done by creating a new 4D matrix with the same shape as the old one, but with the image type
+Removing this data is done in order to ascertain the importance of the image type to the machine learning model
+Parameters
+----------
+array_to_remove_from: 4D numpy array
+    The 4D numpy array to remove the image type from
+image_type_to_keep: string
+    The image type to keep of the three image types in the array. Can be "brightfield", "reflective", or "DAPI."
+    The other two image types will be removed from the array.
+Returns
+-------
+new_array: 4D numpy array
+    The 4D numpy array with the image type removed
+'''
 def remove_two_image_types_from_4D(array_to_remove_from, image_type_to_keep):
     if image_type_to_keep != "brightfield" and image_type_to_keep != "reflective" and image_type_to_keep != "DAPI": 
         raise ValueError("Invalid image type")
@@ -38,7 +55,24 @@ def remove_two_image_types_from_4D(array_to_remove_from, image_type_to_keep):
                     new_array[0][b][c][d] = array_to_remove_from[0][b][c][d]
     return new_array
 
-
+'''
+Walks through a directory, copies the text file containing the number of cells in the ROI, and then two image types
+from all the 4D matrices in the directory. Then saves the new 4D matrices to a new directory with the same name as the
+original directory. Also copies the label matrix to the new directory.
+Removing this data is done in order to ascertain the importance of the image type to the machine learning model
+Parameters
+----------
+starting_directory: string
+    The directory to walk through and remove the image type from
+target_directory: string
+    The directory to save the new 4D matrices to
+image_type_to_keep: string
+    The image type to keep of the three image types in the array. Can be "brightfield", "reflective", or "DAPI."
+    The other two image types will be removed from the array.
+Returns
+-------
+None
+'''
 def cut_two_image_types(starting_directory, target_directory, image_type_to_keep):
     checkDirectory(starting_directory)
     checkDirectory(target_directory)
@@ -105,18 +139,3 @@ if __name__ == "__main__":
     starting_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\May_Cutting_Image_Types\step9 Rotated_ROI_1600_cells"
     target_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\May_Cutting_Image_Types\Only_Reflective_1600_cells"
     cut_two_image_types(starting_directory, target_directory, "reflective")
-
-
-
-
-'''
-         for file in files:
-            x = str(file)
-            if x.endswith(".txt"):
-                file1 = open(os.path.join(starting_directory, directory, file))
-                if test == True:
-                    print(file1.read())
-                    print(os.path.join(starting_directory, directory, file))
-                    print(os.path.join(target_directory, directory, file))
-                shutil.copy(os.path.join(starting_directory, directory, file),os.path.join(target_directory, directory, file))
-'''

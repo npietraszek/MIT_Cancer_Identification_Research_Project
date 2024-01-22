@@ -21,9 +21,26 @@ Program works as intended!
 
 import os
 import numpy as np
-import shutil
-from Common_Utils import checkDirectory
+import sys
+sys.path.append("")
+from Common_Utils.checkDirectory import checkDirectory
 
+
+'''
+Removes a single image type from a 4D matrix.
+Removing this data is done by creating a new 4D matrix with the same shape as the old one, but with the image type
+Removing this data is done in order to ascertain the importance of the image type to the machine learning model
+Parameters
+----------
+array_to_remove_from: 4D numpy array
+    The 4D numpy array to remove the image type from
+image_type: string
+    The image type to remove from the 4D numpy array. Can be "brightfield", "reflective", or "DAPI"
+Returns
+-------
+new_array: 4D numpy array
+    The 4D numpy array with the image type removed
+'''
 def remove_image_type_from_4D(array_to_remove_from,image_type):
     if image_type != "brightfield" and image_type != "reflective" and image_type != "DAPI": 
         raise ValueError("Invalid image type")
@@ -42,8 +59,24 @@ def remove_image_type_from_4D(array_to_remove_from,image_type):
                     new_array[1][b][c][d] = array_to_remove_from[2][b][c][d]
     return new_array
 
-
-def cut_single_image_type(starting_directory, target_directory, image_type, test = False):
+'''
+Walks through a directory, copies the text file containing the number of cells in the ROI, and then removes an image type
+from all the 4D matrices in the directory. Then saves the new 4D matrices to a new directory with the same name as the
+original directory. Also copies the label matrix to the new directory.
+Removing this data is done in order to ascertain the importance of the image type to the machine learning model
+Parameters
+----------
+starting_directory: string
+    The directory to walk through and remove the image type from
+target_directory: string
+    The directory to save the new 4D matrices to
+image_type: string
+    The image type to remove from the 4D numpy array. Can be "brightfield", "reflective", or "DAPI"
+Returns
+-------
+None
+'''
+def cut_single_image_type(starting_directory, target_directory, image_type):
     checkDirectory(starting_directory)
     checkDirectory(target_directory)
 
@@ -123,18 +156,3 @@ if __name__ == "__main__":
     starting_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\May_Cutting_Image_Types\step9 Rotated_ROI_without_1600"
     target_directory = r"D:\MIT_Tumor_Identifcation_Project_Stuff\May_Cutting_Image_Types\No_brightfield_without_1600"
     cut_single_image_type(starting_directory, target_directory, "brightfield")
-
-
-
-
-'''
-         for file in files:
-            x = str(file)
-            if x.endswith(".txt"):
-                file1 = open(os.path.join(starting_directory, directory, file))
-                if test == True:
-                    print(file1.read())
-                    print(os.path.join(starting_directory, directory, file))
-                    print(os.path.join(target_directory, directory, file))
-                shutil.copy(os.path.join(starting_directory, directory, file),os.path.join(target_directory, directory, file))
-'''

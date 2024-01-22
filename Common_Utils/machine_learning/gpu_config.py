@@ -1,12 +1,13 @@
 import keras.backend as tfback
 import tensorflow as tf
 
-def _get_available_gpus():
-    """Get a list of available gpu devices (formatted as strings).
+"""Get a list of available gpu devices (formatted as strings).
 
-    # Returns
-        A list of available GPU devices.
-    """
+# Returns
+    A list of available GPU devices.
+"""
+def _get_available_gpus():
+
     #global _LOCAL_DEVICES
     if tfback._LOCAL_DEVICES is None:
         devices = tf.config.list_logical_devices()

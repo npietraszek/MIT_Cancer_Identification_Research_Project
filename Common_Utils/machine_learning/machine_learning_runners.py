@@ -11,11 +11,15 @@ from generators import nicholas_generator
 from loss_function_utils import step_decay_creator
 import numpy as np
 import os
-from feeder_functions import get_the_rotated_files
+
+# Fixes relative import issues
+import sys
+sys.path.append("")
+from Common_Utils.machine_learning.feeder_functions import prepare_randomized_cell_datasets
 import tensorflow as tf
-from tensorflow import InteractiveSession
+from tensorflow.compat.v1 import InteractiveSession
 from Common_Utils.checkDirectory import checkDirectory
-from Common_Utils.machine_learning.loss_function_utils import read_validation_loss_from_dataset_log
+from Common_Utils.machine_learning.post_test_utils import read_validation_loss_from_dataset_log
 
 '''
 Main machine learning run program. Runs a "superloop" of multiple machine learning epoch runs with cells randomized into training, validation, and testing datasets.
@@ -88,7 +92,7 @@ def super_train_loop(parent_weight_save_folder, epoch_name_part_1,
         callbacks_list = [lrate, checkpoint,csv_logger]
 
         final_training_data, final_training_labels, final_validation_data, final_validation_labels, final_testing_data, \
-        final_testing_labels, final_saved_testing_data, final_saved_testing_labels = get_the_rotated_files()
+        final_testing_labels, final_saved_testing_data, final_saved_testing_labels = prepare_randomized_cell_datasets()
 
         file1 = open(os.path.join(weight_save_folder, r"Datasets.txt"), "a")  # append mode
         file1.write("Datasets for this epoch weights \n")
